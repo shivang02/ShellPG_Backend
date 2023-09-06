@@ -55,5 +55,23 @@ namespace ShellPG_Backend.Services
             await _context.SaveChangesAsync();
             return user;
         }
+
+        // Implementing LoginUser method
+
+        public async Task<User> LoginUser(User user)
+        {
+            var userExists = await _context.Users.AnyAsync(u => u.Username == user.Username);
+            if (!userExists)
+            {
+                throw new Exception("User does not exist");
+            }
+            var userFromDb = await _context.Users.FirstOrDefaultAsync(u => u.Username == user.Username);
+            var passwordValid = BCrypt.Net.BCrypt.Verify(user.PasswordHash, userFromDb.PasswordHash);
+            if (!passwordValid)
+            {
+                throw new Exception("Invalid credentials");
+            }
+            return userFromDb;
+        }
     }
 }
