@@ -2,9 +2,9 @@
 
 namespace ShellPG_Backend.Data.Models
 {
-    public class User
+    public class User: IDInterface
     {
-        // Need to add more properties to this model
+        // use IDInterface
         public int Id { get; set; }
         [Required]
         public string FirstName { get; set; }
@@ -23,13 +23,12 @@ namespace ShellPG_Backend.Data.Models
         // set default role as "User"
         public string Role { get; set; } = "User";
 
-        // address
-        public string Address { get; set; }
-        [Required]
-        public string City { get; set; }
-        public string State { get; set; } = "KA";
-        [Required]
-        public string PinCode { get; set; }
-        
+        // address model
+        public string AddressLine1 { get; set; } = "";
+        public string AddressLine2 { get; set; } = "";
+        public string City { get; set; } = "";
+        public string State { get; set; } = "";
+        public string PinCode { get; set; } = "";
+
     }
 }
