@@ -28,7 +28,8 @@ namespace ShellPG_Backend.Controllers
         public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
         {
             // Identify the currently logged-in user (you need to implement this part)
-            var userId = GetCurrentUserId(); // Implement a method to get the user ID
+            var jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            var userId = GetCurrentUserId(jwtToken); // Implement a method to get the user ID
 
             if (userId == null)
             {
@@ -48,18 +49,16 @@ namespace ShellPG_Backend.Controllers
             return userOrders;
         }
 
-        private int GetCurrentUserId()
-        {
-            // Implement this method to get the user ID from the JWT token
-            // You can use the following code to get the token from the request header
-            // this token is just for testing, to extract information form this token you need to use the above code
-            var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjEiLCJuYmYiOjE2OTQ1OTgwMjMsImV4cCI6MTY5NTIwMjgyMywiaWF0IjoxNjk0NTk4MDIzfQ.Qp5068WwsdXTfcqQGnQnMhcXJzuytIZbaq8zYwD0o0Y";
+        //private int GetCurrentUserId()
+        //{
 
-            // Then you can use the JwtSecurityTokenHandler class to read the token
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var tokenData = tokenHandler.ReadJwtToken(token);
-            var userId = tokenData.Claims.First(claim => claim.Type == "Id").Value;
-            return int.Parse(userId);
+        //    //var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjEiLCJuYmYiOjE2OTQ1OTgwMjMsImV4cCI6MTY5NTIwMjgyMywiaWF0IjoxNjk0NTk4MDIzfQ.Qp5068WwsdXTfcqQGnQnMhcXJzuytIZbaq8zYwD0o0Y";
+        //    var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+        //    // Then you can use the JwtSecurityTokenHandler class to read the token
+        //    var tokenHandler = new JwtSecurityTokenHandler();
+        //    var tokenData = tokenHandler.ReadJwtToken(token);
+        //    var userId = tokenData.Claims.First(claim => claim.Type == ClaimTypes.Name).Value;
+        //    return int.Parse(userId);
 
         //var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
 
@@ -71,7 +70,16 @@ namespace ShellPG_Backend.Controllers
         //    var userId = tokenData.Claims.First(claim => claim.Type == "UserId").Value;
         //    return int.Parse(userId);
             
+        //}
+
+        private int GetCurrentUserId(string jwtToken)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var tokenData = tokenHandler.ReadJwtToken(jwtToken);
+            var userId = tokenData.Claims.First(claim => claim.Type == ClaimTypes.Name).Value;
+            return int.Parse(userId);
         }
+
 
         // GET: api/Orders/5
         [HttpGet("{id}")]
@@ -141,8 +149,8 @@ namespace ShellPG_Backend.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateOrder([FromBody] OrderRequestModel orderRequest)
         {
-            // Identify the currently logged-in user
-            var userId = GetCurrentUserId(); // Implement a method to get the user ID
+            var jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            var userId = GetCurrentUserId(jwtToken); // Implement a method to get the user ID
 
             if (userId == null)
             {
