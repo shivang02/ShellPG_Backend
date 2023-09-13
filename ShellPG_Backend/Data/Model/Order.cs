@@ -18,10 +18,6 @@
 
         // product array for the Product
         public virtual List<Product> Products { get; set; }
-
-
-
-
     }
 
 }

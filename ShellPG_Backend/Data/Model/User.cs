@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ShellPG_Backend.Data.Model
 {
-    [Table("Users", Schema = "user_schema")]
+    [Table("Users")]
     public class User
     {
         public int Id { get; set; }

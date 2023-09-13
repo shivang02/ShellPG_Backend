@@ -51,12 +51,24 @@ namespace ShellPG_Backend.Controllers
         {
             // Implement this method to get the user ID from the JWT token
             // You can use the following code to get the token from the request header
-            var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            // this token is just for testing, to extract information form this token you need to use the above code
+            var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjEiLCJuYmYiOjE2OTQ1OTgwMjMsImV4cCI6MTY5NTIwMjgyMywiaWF0IjoxNjk0NTk4MDIzfQ.Qp5068WwsdXTfcqQGnQnMhcXJzuytIZbaq8zYwD0o0Y";
+
             // Then you can use the JwtSecurityTokenHandler class to read the token
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenData = tokenHandler.ReadJwtToken(token);
             var userId = tokenData.Claims.First(claim => claim.Type == "UserId").Value;
             return int.Parse(userId);
+
+        //var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+
+
+        //// Then you can use the JwtSecurityTokenHandler class to read the token
+        //var tokenHandler = new JwtSecurityTokenHandler();
+        //    var tokenData = tokenHandler.ReadJwtToken(token);
+        //    var userId = tokenData.Claims.First(claim => claim.Type == "UserId").Value;
+        //    return int.Parse(userId);
             
         }
 
@@ -109,20 +121,20 @@ namespace ShellPG_Backend.Controllers
             return NoContent();
         }
 
-        // POST: api/Orders
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Order>> PostOrder(Order order)
-        {
-          if (_context.Orders == null)
-          {
-              return Problem("Entity set 'ApplicationDbContext.Orders'  is null.");
-          }
-            _context.Orders.Add(order);
-            await _context.SaveChangesAsync();
+        //// POST: api/Orders
+        //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        //[HttpPost]
+        //public async Task<ActionResult<Order>> PostOrder(Order order)
+        //{
+        //  if (_context.Orders == null)
+        //  {
+        //      return Problem("Entity set 'ApplicationDbContext.Orders'  is null.");
+        //  }
+        //    _context.Orders.Add(order);
+        //    await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetOrder", new { id = order.Id }, order);
-        }
+        //    return CreatedAtAction("GetOrder", new { id = order.Id }, order);
+        //}
 
         // POST: api/Orders
         [HttpPost]
