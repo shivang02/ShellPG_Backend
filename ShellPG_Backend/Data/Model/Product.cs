@@ -1,7 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ShellPG_Backend.Data.Model
 {
+    [Table("Products", Schema = "product_schema")]
+
     public class Product
     {
         public int Id { get; set; }

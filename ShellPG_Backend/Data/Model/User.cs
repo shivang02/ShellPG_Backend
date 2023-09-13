@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ShellPG_Backend.Data.Model
 {
+    [Table("Users", Schema = "user_schema")]
     public class User
     {
         public int Id { get; set; }
@@ -15,7 +17,6 @@ namespace ShellPG_Backend.Data.Model
         [StringLength(255)]
         public string Email { get; set; }
 
-        [Phone]
         [StringLength(20)]
         public string Phone { get; set; }
 
