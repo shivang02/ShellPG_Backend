@@ -19,7 +19,18 @@ namespace ShellPG_Backend
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            builder.Services.AddScoped<IShellpgDataAccessLayer, ShellpgDataAccessLayer>();
+            //builder.Services.AddScoped<IShellpgDataAccessLayer, ShellpgDataAccessLayer>();
+
+            // enable cors policy for all origins, headers and methods
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("clients allowed", opt =>
+                {
+                    opt.WithOrigins("http://localhost:5173")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+                });
 
             var app = builder.Build();
 
@@ -34,6 +45,8 @@ namespace ShellPG_Backend
 
 
             app.MapControllers();
+
+            app.UseCors("clients allowed");
 
             app.Run();
         }

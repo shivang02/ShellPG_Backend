@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShellPG_Backend.Data;
 using ShellPG_Backend.Data.Model;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 namespace ShellPG_Backend.Controllers
 {
@@ -82,14 +86,35 @@ namespace ShellPG_Backend.Controllers
         }
         // POST: api/Users/login
 
-        [HttpPost]
+        [HttpPost("Login")]
         public ActionResult<User> LoginUser(User user)
         {
             var u = _context.Users.Where(u => u.Email == user.Email && u.Password == user.Password).FirstOrDefault();
 
             if (u!=null)
             {
-                return Ok(u);
+                // to return a JWT token here using bcrypt we need to add a reference to the nuget package System.IdentityModel.Tokens.Jwt and add the following using statement: using System.IdentityModel.Tokens.Jwt;
+                // then we can use the following code to generate a JWT token:
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.ASCII.GetBytes("this is my custom Secret key for authentication");
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(new Claim[]
+                    {
+                        new Claim(ClaimTypes.Name, u.Id.ToString())
+                    }),
+                    Expires = DateTime.UtcNow.AddDays(7),
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+
+                };
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                return Ok(new
+                {
+                    token = tokenHandler.WriteToken(token)
+                });
+
+
+
             }
             else
             {
