@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -57,7 +58,7 @@ namespace ShellPG_Backend.Controllers
             // Then you can use the JwtSecurityTokenHandler class to read the token
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenData = tokenHandler.ReadJwtToken(token);
-            var userId = tokenData.Claims.First(claim => claim.Type == "UserId").Value;
+            var userId = tokenData.Claims.First(claim => claim.Type == "Id").Value;
             return int.Parse(userId);
 
         //var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
