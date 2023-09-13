@@ -33,6 +33,8 @@ namespace ShellPG_Backend.Data.Model
         [Required]
         [Range(1, 5)] 
         public decimal Rating { get; set; }
+
+
     }
 
 }

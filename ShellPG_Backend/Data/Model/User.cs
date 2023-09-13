@@ -26,6 +26,8 @@ namespace ShellPG_Backend.Data.Model
         [Required]
         [StringLength(255)] 
         public string Password { get; set; }
+        //public ICollection<Order> Orders { get; set; } = new List<Order>();
+
     }
 
 }

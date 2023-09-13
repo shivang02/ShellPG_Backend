@@ -93,8 +93,6 @@ namespace ShellPG_Backend.Controllers
 
             if (u!=null)
             {
-                // to return a JWT token here using bcrypt we need to add a reference to the nuget package System.IdentityModel.Tokens.Jwt and add the following using statement: using System.IdentityModel.Tokens.Jwt;
-                // then we can use the following code to generate a JWT token:
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes("this is my custom Secret key for authentication");
                 var tokenDescriptor = new SecurityTokenDescriptor
@@ -112,9 +110,6 @@ namespace ShellPG_Backend.Controllers
                 {
                     token = tokenHandler.WriteToken(token)
                 });
-
-
-
             }
             else
             {
@@ -123,6 +118,24 @@ namespace ShellPG_Backend.Controllers
 
         }
 
+        // POST: api/Users/register
+        [HttpPost("Register")]
+        public async Task<ActionResult<User>> RegisterUser(User user)
+        {
+            var u = _context.Users.Where(u => u.Email == user.Email).FirstOrDefault();
+
+            if (u != null)
+            {
+                return BadRequest("User already exists");
+            }
+            else
+            {
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+                return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            }
+
+        }
 
         // POST: api/Users
         [HttpPost]
