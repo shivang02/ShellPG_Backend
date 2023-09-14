@@ -7,6 +7,7 @@ namespace ShellPG_Backend.Data.Model
 
     public class Product
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required]

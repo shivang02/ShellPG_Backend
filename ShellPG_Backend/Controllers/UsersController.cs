@@ -94,7 +94,7 @@ namespace ShellPG_Backend.Controllers
             if (u!=null)
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes("this is my custom Secret key for authentication");
+                var key = Encoding.ASCII.GetBytes("billobaggebillobaggebillobaggebillobaggebillobaggebillobaggebillobaggebillobagge");
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = new ClaimsIdentity(new Claim[]

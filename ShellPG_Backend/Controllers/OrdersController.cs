@@ -69,16 +69,25 @@ namespace ShellPG_Backend.Controllers
         //    var tokenData = tokenHandler.ReadJwtToken(token);
         //    var userId = tokenData.Claims.First(claim => claim.Type == "UserId").Value;
         //    return int.Parse(userId);
-            
+
         //}
 
         private int GetCurrentUserId(string jwtToken)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenData = tokenHandler.ReadJwtToken(jwtToken);
-            var userId = tokenData.Claims.First(claim => claim.Type == ClaimTypes.Name).Value;
-            return int.Parse(userId);
+
+            // The claim name in your JWT payload is "unique_name"
+            var uniqueNameClaim = tokenData.Claims.FirstOrDefault(claim => claim.Type == "unique_name");
+
+            Console.WriteLine(uniqueNameClaim.Value);
+            
+            return int.Parse(uniqueNameClaim.Value);
+            // Handle the case where the user ID cannot be parsed or is not present in the token.
+            // You can throw an exception or return a default value as needed.
+            throw new InvalidOperationException("User ID not found in JWT token.");
         }
+
 
 
         // GET: api/Orders/5
@@ -149,6 +158,11 @@ namespace ShellPG_Backend.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateOrder([FromBody] OrderRequestModel orderRequest)
         {
+            if (orderRequest == null)
+            {
+                return BadRequest("Invalid order request"); // Return a meaningful error response
+            }
+
             var jwtToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
             var userId = GetCurrentUserId(jwtToken); // Implement a method to get the user ID
 
@@ -163,29 +177,55 @@ namespace ShellPG_Backend.Controllers
                 UserId = userId, // Associate the order with the logged-in user
                 OrderDate = DateTime.UtcNow, // Use current timestamp
                 TotalPrice = orderRequest.TotalPrice,
-                
+                ProductIds = orderRequest.ProductIds
             };
 
-            foreach (var productItem in orderRequest.Order)
-            {
-                var product = new Product
-                {
-                    Name = productItem.ProductName,
-                    Quantity = productItem.Quantity,
-                    Price = productItem.Price,
-                    // Map other product properties here as needed
-                };
 
-                order.Products.Add(product);
-            }
+
+            //if (orderRequest.Order != null)
+            //{
+            //    foreach (var productItem in orderRequest.Order)
+            //    {
+            //        var product = new Product
+            //        {
+            //            Id = productItem.ProductId,
+            //            Name = productItem?.ProductName,
+            //            Quantity = productItem.Quantity,
+            //            Price = productItem.Price,
+                        
+            //        };
+
+            //        order.Products.Add(product);
+            //        order.ProductIds.Append(product.Id);
+            //    }
+            //}
+            //else
+            //{
+            //    return BadRequest("Order items are missing"); // Return a meaningful error response
+            //}
 
             // Add the order to the context and save changes
-            _context.Orders.Add(order);
+            _context.Orders.Add(order); 
             await _context.SaveChangesAsync();
+
+            //loop through the order product ids and update the product quantity in product table
+
+            foreach (var productId in order.ProductIds)
+            {
+                var product = await _context.Products.FindAsync(productId);
+                if (product != null)
+                {
+                    product.Quantity -= 1;
+                    _context.Entry(product).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+                }
+            }
+
 
             // Return a success response
             return Ok("Order created successfully");
         }
+
 
 
         // DELETE: api/Orders/5
