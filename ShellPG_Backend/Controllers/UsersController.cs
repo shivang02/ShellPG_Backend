@@ -89,10 +89,17 @@ namespace ShellPG_Backend.Controllers
         [HttpPost("Login")]
         public ActionResult<User> LoginUser(User user)
         {
-            var u = _context.Users.Where(u => u.Email == user.Email && u.Password == user.Password).FirstOrDefault();
+            // validate password hash and match email
+            
+            var u = _context.Users.Where(u => u.Email == user.Email).FirstOrDefault();
 
             if (u!=null)
             {
+                bool valid = BCrypt.Net.BCrypt.Verify(user.Password, u.Password);
+                if (!valid)
+                {
+                    return NotFound();
+                }
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes("billobaggebillobaggebillobaggebillobaggebillobaggebillobaggebillobaggebillobagge");
                 var tokenDescriptor = new SecurityTokenDescriptor
@@ -133,7 +140,8 @@ namespace ShellPG_Backend.Controllers
             }
             else
             {
-
+                // hash password
+                user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
                 return CreatedAtAction("GetUser", new { id = user.Id }, user);

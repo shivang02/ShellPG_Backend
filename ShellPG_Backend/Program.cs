@@ -19,8 +19,6 @@ namespace ShellPG_Backend
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            //builder.Services.AddScoped<IShellpgDataAccessLayer, ShellpgDataAccessLayer>();
-
             // enable cors policy for all origins, headers and methods
             builder.Services.AddCors(options =>
             {
