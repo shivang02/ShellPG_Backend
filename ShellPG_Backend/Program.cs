@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using ShellPG_Backend.Data;
+
 namespace ShellPG_Backend
 {
     public class Program
@@ -13,6 +16,21 @@ namespace ShellPG_Backend
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                           options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            // enable cors policy for all origins, headers and methods
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("clients allowed", opt =>
+                {
+                    // allow all origins, headers and methods
+                    opt.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+                });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -26,6 +44,8 @@ namespace ShellPG_Backend
 
 
             app.MapControllers();
+
+            app.UseCors("clients allowed");
 
             app.Run();
         }
