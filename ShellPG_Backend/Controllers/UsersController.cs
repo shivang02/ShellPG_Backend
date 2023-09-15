@@ -108,7 +108,8 @@ namespace ShellPG_Backend.Controllers
                 var token = tokenHandler.CreateToken(tokenDescriptor);
                 return Ok(new
                 {
-                    token = tokenHandler.WriteToken(token)
+                    token = tokenHandler.WriteToken(token),
+                    userName = u.Name
                 });
             }
             else
@@ -126,10 +127,13 @@ namespace ShellPG_Backend.Controllers
 
             if (u != null)
             {
+                Console.WriteLine(user);
+                Console.WriteLine(user);
                 return BadRequest("User already exists");
             }
             else
             {
+
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
                 return CreatedAtAction("GetUser", new { id = user.Id }, user);

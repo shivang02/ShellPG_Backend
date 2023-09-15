@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShellPG_Backend.Data;
@@ -49,29 +43,6 @@ namespace ShellPG_Backend.Controllers
             return userOrders;
         }
 
-        //private int GetCurrentUserId()
-        //{
-
-        //    //var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjEiLCJuYmYiOjE2OTQ1OTgwMjMsImV4cCI6MTY5NTIwMjgyMywiaWF0IjoxNjk0NTk4MDIzfQ.Qp5068WwsdXTfcqQGnQnMhcXJzuytIZbaq8zYwD0o0Y";
-        //    var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-        //    // Then you can use the JwtSecurityTokenHandler class to read the token
-        //    var tokenHandler = new JwtSecurityTokenHandler();
-        //    var tokenData = tokenHandler.ReadJwtToken(token);
-        //    var userId = tokenData.Claims.First(claim => claim.Type == ClaimTypes.Name).Value;
-        //    return int.Parse(userId);
-
-        //var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-
-
-
-        //// Then you can use the JwtSecurityTokenHandler class to read the token
-        //var tokenHandler = new JwtSecurityTokenHandler();
-        //    var tokenData = tokenHandler.ReadJwtToken(token);
-        //    var userId = tokenData.Claims.First(claim => claim.Type == "UserId").Value;
-        //    return int.Parse(userId);
-
-        //}
-
         private int GetCurrentUserId(string jwtToken)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -80,11 +51,10 @@ namespace ShellPG_Backend.Controllers
             // The claim name in your JWT payload is "unique_name"
             var uniqueNameClaim = tokenData.Claims.FirstOrDefault(claim => claim.Type == "unique_name");
 
-            Console.WriteLine(uniqueNameClaim.Value);
+            Console.WriteLine("userIDFF"+ uniqueNameClaim.Value);
             
             return int.Parse(uniqueNameClaim.Value);
-            // Handle the case where the user ID cannot be parsed or is not present in the token.
-            // You can throw an exception or return a default value as needed.
+    
             throw new InvalidOperationException("User ID not found in JWT token.");
         }
 
@@ -139,21 +109,7 @@ namespace ShellPG_Backend.Controllers
             return NoContent();
         }
 
-        //// POST: api/Orders
-        //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPost]
-        //public async Task<ActionResult<Order>> PostOrder(Order order)
-        //{
-        //  if (_context.Orders == null)
-        //  {
-        //      return Problem("Entity set 'ApplicationDbContext.Orders'  is null.");
-        //  }
-        //    _context.Orders.Add(order);
-        //    await _context.SaveChangesAsync();
-
-        //    return CreatedAtAction("GetOrder", new { id = order.Id }, order);
-        //}
-
+        
         // POST: api/Orders
         [HttpPost]
         public async Task<IActionResult> CreateOrder([FromBody] OrderRequestModel orderRequest)
@@ -180,29 +136,6 @@ namespace ShellPG_Backend.Controllers
                 ProductIds = orderRequest.ProductIds
             };
 
-
-
-            //if (orderRequest.Order != null)
-            //{
-            //    foreach (var productItem in orderRequest.Order)
-            //    {
-            //        var product = new Product
-            //        {
-            //            Id = productItem.ProductId,
-            //            Name = productItem?.ProductName,
-            //            Quantity = productItem.Quantity,
-            //            Price = productItem.Price,
-                        
-            //        };
-
-            //        order.Products.Add(product);
-            //        order.ProductIds.Append(product.Id);
-            //    }
-            //}
-            //else
-            //{
-            //    return BadRequest("Order items are missing"); // Return a meaningful error response
-            //}
 
             // Add the order to the context and save changes
             _context.Orders.Add(order); 

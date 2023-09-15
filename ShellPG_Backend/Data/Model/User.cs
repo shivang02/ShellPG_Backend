@@ -8,7 +8,7 @@ namespace ShellPG_Backend.Data.Model
     {
         public int Id { get; set; }
 
-        [Required]
+
         [StringLength(255)]
         public string Name { get; set; }
 
@@ -26,7 +26,6 @@ namespace ShellPG_Backend.Data.Model
         [Required]
         [StringLength(255)] 
         public string Password { get; set; }
-        //public ICollection<Order> Orders { get; set; } = new List<Order>();
 
     }
 

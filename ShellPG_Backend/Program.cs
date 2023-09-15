@@ -26,7 +26,8 @@ namespace ShellPG_Backend
             {
                 options.AddPolicy("clients allowed", opt =>
                 {
-                    opt.WithOrigins("http://localhost:5173")
+                    // allow all origins, headers and methods
+                    opt.AllowAnyOrigin()
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                 });

@@ -10,7 +10,6 @@
 
     public class OrderRequestModel
     {
-        //public List<OrderItem> Order { get; set; }
         public int[] ProductIds { get; set; }
         public decimal TotalPrice { get; set; }
         public DateTime OrderDate { get; set; }
